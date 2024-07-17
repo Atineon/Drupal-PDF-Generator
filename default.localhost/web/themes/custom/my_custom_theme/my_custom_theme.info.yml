@@ -1,0 +1,11 @@
+name: 'My Custom Theme'
+type: theme
+description: 'A custom theme for Drupal 10.'
+core_version_requirement: ^10
+base theme: starterkit_theme
+package: Custom
+regions:
+  header: 'Header'
+  content: 'Content'
+  sidebar_first: 'Sidebar first'
+  footer: 'Footer'

@@ -1,0 +1,26 @@
+{#
+/**
+ * @file
+ * Custom theme implementation to display an article node.
+ *
+ * Available variables:
+ * - node: The node entity with all its data.
+ * - content: All node content.
+ * - label: The title of the node.
+ * - date: The creation date of the node.
+ * - author_name: The username of the node author.
+ */
+#}
+<article class="node--{{ node.bundle }}">
+	<header>
+		<h1>{{ label }}</h1>
+		<p class="meta">
+			{{ author_name }}
+			-
+			{{ date }}
+		</p>
+	</header>
+	<div class="content">
+		{{ content.body }}
+	</div>
+</article>

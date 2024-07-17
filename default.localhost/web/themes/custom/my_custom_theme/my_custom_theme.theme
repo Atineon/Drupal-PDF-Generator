@@ -1,0 +1,11 @@
+<?php
+
+/**
+ * Implements hook_theme_suggestions_HOOK_alter() for page templates.
+ */
+function mytheme_theme_suggestions_page_alter(array &$suggestions, array $variables)
+{
+    if (\Drupal::routeMatch()->getRouteName() == 'your_module.custom_page') {
+        $suggestions[] = 'page__custom_page';
+    }
+}
