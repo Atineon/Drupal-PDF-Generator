@@ -1,0 +1,8 @@
+bootstrap:
+  css:
+    theme:
+      libraries/Bootstrap-5.3.3/bootstrap.min.css: {}
+bootstrap-icons:
+  css:
+    theme:
+      libraries/Bootstrap-icons-1.11.3/font/bootstrap-icons.min.css: {}

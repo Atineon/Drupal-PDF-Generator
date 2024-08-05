@@ -1,0 +1,17 @@
+<?php
+
+/**
+ * Implements hook_menu().
+ */
+function pdf_generator_menu()
+{
+    $items = [];
+
+    $items['pdf_generator/custom_page'] = [
+        'title' => 'Custom Page',
+        'page callback' => 'Drupal\pdf_generator\Service\PDFGeneratorService::generatePDFFromRenderableNode',
+        'access callback' => TRUE,
+    ];
+
+    return $items;
+}

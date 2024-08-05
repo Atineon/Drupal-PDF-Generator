@@ -1,0 +1,5 @@
+name: "PDF Generator"
+type: module
+description: "Provides PDF generation services."
+core_version_requirement: ^10
+package: Custom
