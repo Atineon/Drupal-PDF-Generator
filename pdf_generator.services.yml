@@ -1,3 +1,0 @@
-services:
-  pdf_generator.generator:
-    class: 'Drupal\pdf_generator\Service\PDFGeneratorService'

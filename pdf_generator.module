@@ -7,9 +7,9 @@ function pdf_generator_menu()
 {
     $items = [];
 
-    $items['pdf_generator/custom_page'] = [
-        'title' => 'Custom Page',
-        'page callback' => 'Drupal\pdf_generator\Service\PDFGeneratorService::generatePDFFromRenderableNode',
+    $items['pdf_generator/short_story'] = [
+        'title' => 'Short Story',
+        'page callback' => 'Drupal\pdf_generator\Controller\PDFGeneratorController::generatePDFFromRenderableEntity',
         'access callback' => TRUE,
     ];
 
