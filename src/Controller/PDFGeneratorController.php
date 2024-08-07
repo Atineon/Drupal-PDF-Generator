@@ -45,16 +45,10 @@ class PDFGeneratorController extends ControllerBase
             $html = \Drupal::service('renderer')->renderRoot($build);
             $module_path = \Drupal::service('extension.list.module')->getPath('pdf_generator');
 
-            $bootstrapIconsCss = file_get_contents($module_path . '/libraries/Bootstrap-icons-1.11.3/font/bootstrap-icons.min.css');
-            $bootstrapCss = file_get_contents($module_path . '/libraries/Bootstrap-5.3.3/css/bootstrap.min.css');
-            $bootstrapJs = file_get_contents($module_path . '/libraries/Bootstrap-5.3.3/js/bootstrap.bundle.min.js');
             $customCss = file_get_contents($module_path . '/css/custom.css');
             $finalHtml = '
             <html>
                 <head>
-                    <style>' . $bootstrapIconsCss . '</style>
-                    <style>' . $bootstrapCss . '</style>
-                    <style>' . $bootstrapJs . '</style>
                     <style>' . $customCss . '</style>
                 </head>
                 <body>
