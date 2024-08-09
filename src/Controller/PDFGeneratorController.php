@@ -39,7 +39,7 @@ class PDFGeneratorController extends ControllerBase
         if ($entity instanceof NodeInterface) {
             // Render the Twig template to HTML.
             $build = [
-                '#theme' => $entity->bundle() . '__pdf__',
+                '#theme' => $entity->bundle() . '__pdf',
                 '#node' => $entity,
                 '#format' => $format,
             ];
