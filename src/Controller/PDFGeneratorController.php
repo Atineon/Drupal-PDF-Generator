@@ -39,16 +39,17 @@ class PDFGeneratorController extends ControllerBase
         if ($entity instanceof NodeInterface) {
             // Render the Twig template to HTML.
             $build = [
-                '#theme' => $entity->bundle() . '__pdf',
+                '#theme' => $entity->bundle() . '__pdf__' . $format,
                 '#node' => $entity,
-                '#format' => $format,
             ];
             $html = \Drupal::service('renderer')->renderRoot($build);
+            $css_module_path = \Drupal::service('extension.list.module')->getPath('css_overwrites');
             $module_path = \Drupal::service('extension.list.module')->getPath('pdf_generator');
 
             $bootstrapIconsCss = file_get_contents($module_path . '/libraries/Bootstrap-icons-1.11.3/font/bootstrap-icons.min.css');
             $bootstrapCss = file_get_contents($module_path . '/libraries/Bootstrap-5.3.3/css/bootstrap.min.css');
             $bootstrapJs = file_get_contents($module_path . '/libraries/Bootstrap-5.3.3/js/bootstrap.bundle.min.js');
+            $cssOverwrite = file_get_contents($css_module_path . '/css/text-styles.css');
             $customCss = file_get_contents($module_path . '/css/custom.css');
             $finalHtml = '
                 <html>
@@ -56,6 +57,7 @@ class PDFGeneratorController extends ControllerBase
                         <style>' . $bootstrapIconsCss . '</style>
                         <style>' . $bootstrapCss . '</style>
                         <style>' . $bootstrapJs . '</style>
+                        <style>' . $cssOverwrite . '</style>
                         <style>' . $customCss . '</style>
                     </head>
                     <body>' . $html . '</body>
@@ -87,10 +89,13 @@ class PDFGeneratorController extends ControllerBase
             // return [
             //     '#theme' => $entity->bundle() . '__pdf__' . $format,
             //     '#node' => $entity,
-            //     '#format' => $format,
             // ];
 
-            $dompdf->stream($pdf_title);
+            // Return a response that download the rendered pdf in the attachment.
+            $response = new Response($dompdf->output());
+            $response->headers->set('Content-Type', 'application/pdf');
+            $response->headers->set('Content-Disposition', 'attachment; filename=' . $pdf_title . '.pdf');
+            return $response;
         } else {
             throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
         }
