@@ -20,19 +20,24 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class PDFGeneratorController extends ControllerBase
 {
+    protected EntityTypeManagerInterface $entityTypeManager;
+    protected YamlConfigAPI $yml;
+
     /**
      * Constructor
-     * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
+     * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager
      * @param \Drupal\common_api\Service\YamlConfigAPI $yml
      */
     public function __construct(
-        protected EntityTypeManagerInterface $entity_type_manager,
-        protected YamlConfigAPI $yml
+        EntityTypeManagerInterface $entityTypeManager,
+        YamlConfigAPI $yml
     ) {
+        $this->entityTypeManager = $entityTypeManager;
+        $this->yml = $yml;
     }
 
     /**
-     * Create container interface to avoid Dependecies injections
+     * Create container interface to avoid dependecies injections
      * @param \Symfony\Component\DependencyInjection\ContainerInterface $container
      * @return static
      */

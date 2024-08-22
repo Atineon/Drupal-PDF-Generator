@@ -6,12 +6,14 @@ use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 use Drupal\common_api\Service\YamlConfigAPI;
 
-class PdfGeneratorExtension extends AbstractExtension
+class PDFGeneratorExtension extends AbstractExtension
 {
+  protected YamlConfigAPI $yml;
 
   public function __construct(
-    protected YamlConfigAPI $yml
+    YamlConfigAPI $yml
   ) {
+    $this->yml = $yml;
   }
 
   public function getFunctions()
