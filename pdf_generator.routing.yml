@@ -1,7 +1,8 @@
 pdf_generator.pdf_view:
-    path: "/pdf/{bundle}/{id}/{format}"
+    path: "/pdf/{bundle}/{id}/{format}/{style}"
     defaults:
         _controller: '\Drupal\pdf_generator\Controller\PDFGeneratorController::generatePDFFromRenderableEntity'
         _title_callback: '\Drupal\pdf_generator\Controller\PDFGeneratorController::getTitle'
+        style: null
     requirements:
         _permission: "access content"

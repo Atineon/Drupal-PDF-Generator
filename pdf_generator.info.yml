@@ -1,4 +1,4 @@
-name: "PDF Generator"
+name: "pdf_generator"
 type: module
 description: "Provides PDF generation services."
 core_version_requirement: ^10

@@ -1,0 +1,7 @@
+services:
+  pdf_generator.twig_extension:
+    class: Drupal\pdf_generator\TwigExtension\PdfGeneratorExtension
+    arguments:
+      - '@common_api.yaml'
+    tags:
+      - { name: twig.extension }

@@ -1,0 +1,11 @@
+a4:
+    answers: false
+    translations: false
+    orientation: portrait
+    page_size: A4
+
+landscape:
+    answers: false
+    translations: false
+    orientation: landscape
+    page_size: A4

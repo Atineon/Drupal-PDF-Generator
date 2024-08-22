@@ -1,35 +1,26 @@
 <?php
 
 /**
- * Implements hook_menu().
+ * Implements hook_theme().
  */
-function pdf_generator_menu()
+function pdf_generator_theme($existing, $type, $theme, $path)
 {
-    $items = [];
+  $themes = [];
+  $files = Drupal::service('file_system')->scanDirectory('modules/custom', '~(?!components)([^/]+)(pdf|component).+\.(twig)~');
+  foreach ($files as $file) {
+    $theme_name = str_replace(['.html.twig', '-'], ['', '_'], $file->filename);
 
-    $items['pdf_generator/culture'] = [
-        'title' => 'Culture',
-        'page callback' => 'Drupal\pdf_generator\Controller\PDFGeneratorController::generatePDFFromRenderableEntity',
-        'access callback' => TRUE,
+    if (str_starts_with($theme_name, 'component') || str_ends_with($theme_name, 'component')) {
+      continue;
+    }
+
+    $themes[$theme_name] = [
+      'path' => str_replace('/' . $file->filename, '', $file->uri),
+      'variables' => [
+        'entity' => NULL,
+      ],
     ];
+  }
 
-    $items['pdf_generator/dialogue'] = [
-        'title' => 'Dialogue',
-        'page callback' => 'Drupal\pdf_generator\Controller\PDFGeneratorController::generatePDFFromRenderableEntity',
-        'access callback' => TRUE,
-    ];
-
-    $items['pdf_generator/grammar_table'] = [
-        'title' => 'Grammar Table',
-        'page callback' => 'Drupal\pdf_generator\Controller\PDFGeneratorController::generatePDFFromRenderableEntity',
-        'access callback' => TRUE,
-    ];
-
-    $items['pdf_generator/short_story'] = [
-        'title' => 'Short Story',
-        'page callback' => 'Drupal\pdf_generator\Controller\PDFGeneratorController::generatePDFFromRenderableEntity',
-        'access callback' => TRUE,
-    ];
-
-    return $items;
+  return $themes;
 }
