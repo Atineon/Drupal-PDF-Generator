@@ -1,11 +1,13 @@
 a4:
-    answers: false
-    translations: false
     orientation: portrait
     page_size: A4
+    show_answers: false
+    show_translations: false
+    wrapper: mt-5 mx-5
 
 landscape:
-    answers: false
-    translations: false
     orientation: landscape
     page_size: A4
+    show_answers: false
+    show_translations: false
+    wrapper: m-0

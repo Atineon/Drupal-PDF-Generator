@@ -1,11 +1,37 @@
+@page {
+  margin: 0px;
+}
+
 .page-break {
   page-break-before: always;
 }
 
-span.playable-link a:before, .tip:before {
-  display:none;
+span.playable-link a::before,
+span.playable::before,
+.tip::before {
+  display: none !important;
 }
 
 div.tip {
-  background: transparent;
+  background: transparent !important;
+}
+
+.bg-success {
+  background-color: var(--edutal-green-500) !important;
+}
+
+.text-bg {
+  position: relative;
+}
+
+.text-bg::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.6;
+  background-color: var(--edutal-blue-500);
+  z-index: -1;
 }

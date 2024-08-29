@@ -18,6 +18,11 @@ function pdf_generator_theme($existing, $type, $theme, $path)
       'path' => str_replace('/' . $file->filename, '', $file->uri),
       'variables' => [
         'entity' => NULL,
+        'pdf_settings' => [
+          'pdf' => FALSE,
+          'show_answers' => TRUE,
+          'show_translations' => TRUE,
+        ],
       ],
     ];
   }

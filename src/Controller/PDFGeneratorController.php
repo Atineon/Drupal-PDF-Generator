@@ -1,10 +1,8 @@
 <?php
-
 namespace Drupal\pdf_generator\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Entity\EntityInterface;
-use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\node\NodeInterface;
 use Drupal\taxonomy\TermInterface;
 use Drupal\common_api\Service\YamlConfigAPI;
@@ -20,20 +18,13 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class PDFGeneratorController extends ControllerBase
 {
-    protected EntityTypeManagerInterface $entityTypeManager;
-    protected YamlConfigAPI $yml;
-
     /**
      * Constructor
-     * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager
      * @param \Drupal\common_api\Service\YamlConfigAPI $yml
      */
     public function __construct(
-        EntityTypeManagerInterface $entityTypeManager,
-        YamlConfigAPI $yml
+        protected YamlConfigAPI $yml
     ) {
-        $this->entityTypeManager = $entityTypeManager;
-        $this->yml = $yml;
     }
 
     /**
@@ -44,7 +35,6 @@ class PDFGeneratorController extends ControllerBase
     public static function create(ContainerInterface $container): static
     {
         return new static(
-            $container->get('entity_type.manager'),
             $container->get('common_api.yaml')
         );
     }
@@ -61,7 +51,7 @@ class PDFGeneratorController extends ControllerBase
     public function generatePDFFromRenderableEntity(string $bundle, string $id, string $format, ?string $style): Response
     {
         // Load the current entity
-        $entity = $this->entityTypeManager->getStorage($bundle)->load($id);
+        $entity = $this->entityTypeManager()->getStorage($bundle)->load($id);
 
         // Return error if entity not found
         if (!$entity || !($entity instanceof EntityInterface)) {
@@ -70,42 +60,47 @@ class PDFGeneratorController extends ControllerBase
 
         // Loading styles
         $styleConfig = $this->yml->getConfig("pdf_generator", "formats.yml");
-
         // Return error if format style not found
         if (!$styleConfig[$format]) {
             throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
         }
 
-        if (!($entity instanceof NodeInterface) || !($entity instanceof TermInterface)) {
+        if (!($entity instanceof NodeInterface) && !($entity instanceof TermInterface)) {
             throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
         }
 
         // Build the Twig template to HTML.
         // TODO: throw a page not found if the theme is not found
         $build = [
-            '#theme' => $entity->bundle() . '__pdf__' . $format . '__' . $style != NULL ? $style : "full",
+            '#theme' => $entity->bundle() . '__pdf__' . $format . '__' . ($style != NULL ? $style : "full"),
             '#entity' => $entity,
+            '#cache' => [
+                'tags' => [$entity->getEntityTypeId() . ':' . $entity->id()],
+            ],
         ];
         $html = \Drupal::service('renderer')->renderRoot($build);
 
         // Load styles
+        $theme_path = \Drupal::service('extension.list.theme')->getPath('learning_materials');
         $modulePath = \Drupal::service('extension.list.module')->getPath('pdf_generator');
         $cssModulePath = \Drupal::service('extension.list.module')->getPath('css_overwrites');
 
+        $cssLearningMaterials = file_get_contents($theme_path . '/css/learning_materials.css');
+        $cssOverwrite = file_get_contents($cssModulePath . '/css/text-styles.css');
         $bootstrapIconsCss = file_get_contents($modulePath . '/libraries/Bootstrap-icons-1.11.3/font/bootstrap-icons.min.css');
         $bootstrapCss = file_get_contents($modulePath . '/libraries/Bootstrap-5.3.3/css/bootstrap.min.css');
-        $cssOverwrite = file_get_contents($cssModulePath . '/css/text-styles.css');
         $customCss = file_get_contents($modulePath . '/css/custom.css');
 
         $finalHtml = '
                 <html>
                     <head>
+                        <style>' . $cssLearningMaterials . '</style>
+                        <style>' . $cssOverwrite . '</style>
                         <style>' . $bootstrapIconsCss . '</style>
                         <style>' . $bootstrapCss . '</style>
-                        <style>' . $cssOverwrite . '</style>
                         <style>' . $customCss . '</style>
                     </head>
-                    <body>' . $html . '</body>
+                    <body class="' . $styleConfig[$format]['wrapper'] . '">' . $html . '</body>
                 </html>';
 
         // Initialize Dompdf with options.
@@ -121,7 +116,7 @@ class PDFGeneratorController extends ControllerBase
         $dompdf->render();
 
         // Return a response that download the rendered pdf in the attachment
-        $pdf_title = $entity->bundle() . "_" . str_replace([' ', ','], ['_', ''], $entity->label());
+        $pdf_title = $entity->bundle() . "_" . str_replace([' ', ','], ['_', ''], $entity->label()) . "_" . $format . "_" . $style;
 
         $response = new Response($dompdf->output());
         $response->headers->set('Content-Type', 'application/pdf');

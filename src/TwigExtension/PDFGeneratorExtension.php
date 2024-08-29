@@ -8,12 +8,9 @@ use Drupal\common_api\Service\YamlConfigAPI;
 
 class PDFGeneratorExtension extends AbstractExtension
 {
-  protected YamlConfigAPI $yml;
-
   public function __construct(
-    YamlConfigAPI $yml
+    protected YamlConfigAPI $yml
   ) {
-    $this->yml = $yml;
   }
 
   public function getFunctions()
